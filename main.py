@@ -2,9 +2,17 @@ import flet as ft
 
 from flet.buttons import RoundedRectangleBorder
 
+from time import sleep
+
 
 def main(page: ft.Page):
-    page.title = "Routes Example"
+    page.splash = ft.Container(ft.Image(
+        src="/images/splash_loader.gif", width=200), bgcolor=ft.colors.WHITE, expand=True, alignment=ft.alignment.center)
+    page.update()
+    sleep(5)
+    page.splash = None
+    page.update()
+    page.title = "Study Buddy"
     page.vertical_alignment = "center"  # page alignment
     page.horizontal_alignment = "center"  # page alignment
 
