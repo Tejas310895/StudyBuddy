@@ -1,8 +1,7 @@
 import flet as ft
-
 from flet.buttons import RoundedRectangleBorder
-
 from time import sleep
+import modules.build as format
 
 
 def main(page: ft.Page):
@@ -34,154 +33,84 @@ def main(page: ft.Page):
     }
 
     def explore_container():
-        explore_container = ft.Container(
-            ft.ListTile(
-                leading=ft.Image(
-                    src="images/bio_infor.png", border_radius=50),
-                title=ft.Text("Bioinformatics"),
-                subtitle=ft.Text(
-                    "Sylabus wise study ahead...."
-                ),
-            ),
-            bgcolor=ft.colors.WHITE,
-            on_click=lambda _: page.go("/info_block")
-        )
+        fornt_topic_object = format.TopicListObject()
 
         lv = ft.ListView(expand=True, spacing=0,
                          padding=ft.padding.all(2))
 
         for i in range(1, 20):
-            lv.controls.append(explore_container)
+            lv.controls.append(fornt_topic_object.topic_object(
+                "images/bio_infor.png", "Bioinformatics", "Sylabus wise study ahead....", page))
 
         return lv
 
     def study_container():
-        study_container = ft.Column([
-            ft.Container(
-                ft.TextButton(content=ft.Row([ft.Image(src='/images/avtar1.png', width=20, height=20), ft.Text("What is Python ?",
-                              font_family='JosefinSans Regular', size=15)]),
-                              style=ft.ButtonStyle(
-                                  shape=RoundedRectangleBorder(
-                                      radius=ft.border_radius.BorderRadius(
-                                          topLeft=15,
-                                          topRight=15,
-                                          bottomLeft=0,
-                                          bottomRight=0)
-                                  ), elevation=0,
-                                  bgcolor=ft.colors.PURPLE_50)), padding=ft.padding.only(bottom=0)
-            ),
-            ft.Container(
-                ft.ListTile(
-                    leading=ft.Image(
-                        src="images/avtar1.png", border_radius=50, width=35, height=35),
-                    title=ft.Text("Tejas Shirsat",
-                                  font_family='JosefinSans Regular'),
-                    subtitle=ft.Column([
-                        ft.Container(
-                            ft.Text(
-                                "Python is high level language it is easy to debug and the code interpret by single line so that debuging becomes faster",
-                                font_family='JosefinSans Regular'
-                            ), bgcolor=ft.colors.ORANGE_50, padding=ft.padding.all(10), border_radius=ft.border_radius.BorderRadius(topLeft=0, topRight=15, bottomLeft=15, bottomRight=15)
-                        ),
-                    ]),
-                ), bgcolor=ft.colors.WHITE, padding=ft.padding.only(top=0)
-            )
-        ], spacing=0)
+        study_container = format.TopicListObject()
 
         lv = ft.ListView(expand=True, spacing=10,
                          padding=ft.padding.all(2))
 
         for i in range(1, 20):
-            lv.controls.append(study_container)
+            lv.controls.append(study_container.chat_object('/images/avtar1.png', "What is Python ?", "images/avtar1.png", "Tejas Shirsat",
+                               "Python is high level language it is easy to debug and the code interpret by single line so that debuging becomes faster"))
 
         return lv
 
+    def nav_routes(e):
+        if e.control.selected_index == 0:
+            page.go("/")
+        elif e.control.selected_index == 1:
+            page.go("/add_topic")
+
     def route_change(route):
         page.views.clear()
+        main_app_bar = format.TopicListObject()
+        custom_app_bar = format.TopicListObject()
+        bottom_bar = format.TopicListObject()
         page.views.append(
             ft.View(
                 "/",
                 [
-                    ft.AppBar(
-                        leading=ft.Container(ft.Image(src="/images/logo.png"),
-                                             padding=ft.padding.only(left=10)),
-                        leading_width=40,
-                        title=ft.Text("Study-Buddy", font_family="Frozito",
-                                      size=20, color=ft.colors.ORANGE_ACCENT_200),
-                        center_title=True,
-                        bgcolor=ft.colors.WHITE,
-                        actions=[
-                            ft.IconButton(icon=ft.icons.SEARCH,
-                                          icon_color=ft.colors.ORANGE_400, icon_size=25),
-                            ft.PopupMenuButton(
-                                items=[
-                                    ft.PopupMenuItem(content=ft.Text(
-                                        "Profile", font_family='JosefinSans Regular', size=15)),
-                                    ft.PopupMenuItem(content=ft.Text(
-                                        "Logout", font_family='JosefinSans Regular', size=15)),
-                                ]
-                            )
-                        ],
-                    ),
+                    main_app_bar.main_appbar(page),
                     explore_container(),
-                    ft.NavigationBar(
-                        bgcolor=ft.colors.ORANGE_ACCENT_100,
-                        elevation=0,
-                        height=60,
-                        opacity=50,
-                        destinations=[
-                            ft.NavigationDestination(
-                                icon=ft.icons.EXPLORE_OUTLINED,
-                                selected_icon=ft.icons.EXPLORE,
-                                label="Explore",
-                            ),
-                            ft.NavigationDestination(
-                                icon=ft.icons.BOOKMARK_ADD_OUTLINED,
-                                selected_icon=ft.icons.BOOKMARK_ADD,
-                                label="New Topic",
-                            ),
-                            ft.NavigationDestination(
-                                icon=ft.icons.BOOK_OUTLINED,
-                                selected_icon=ft.icons.BOOK,
-                                label="New Book",
-                            ),
-                        ]
-                    )
+                    bottom_bar.bottom_nav(page)
                 ],
             )
         )
         if page.route == "/info_block":
+            chat_input = format.TopicListObject()
             page.views.append(
                 ft.View(
                     "/info_block",
                     [
-                        ft.AppBar(
-                            leading=ft.IconButton(
-                                icon=ft.icons.ARROW_BACK, icon_size=25, on_click=lambda _: page.go("/")),
-                            leading_width=30,
-                            title=ft.ListTile(
-                                leading=ft.Container(
-                                    ft.Image(src="/images/bio_infor.png"), padding=ft.padding.only(left=0)),
-                                title=ft.Text("Bioinformatics", font_family="JosefinSans Regular",
-                                              size=20, color=ft.colors.BLACK54),
-                                subtitle=ft.Text("Go for the sylabus ahead...", font_family="JosefinSans Regular",
-                                                 size=10, color=ft.colors.BLACK54),
-                                content_padding=ft.padding.only(left=0),
-                                expand=True
-                            ),
-                            center_title=False,
-                            bgcolor=ft.colors.WHITE,
-                        ),
+                        custom_app_bar.custom_appbar(page, 'chat_head'),
                         study_container(),
-                        ft.Row([
-                            ft.TextField(
-                                hint_text="Enter the answer", expand=True, height=40, content_padding=ft.padding.only(top=5, bottom=5, left=10), text_style=ft.TextStyle(font_family='JosefinSans Regular')),
-                            ft.IconButton(icon=ft.icons.SEND_SHARP,
-                                          icon_color=ft.colors.ORANGE_ACCENT_400)
-                        ])
+                        chat_input.chat_input_object("Enter the answer")
                     ],
                 )
             )
+        elif page.route == "/add_topic":
+            page.views.append(
+                ft.View(
+                    "/add_topic",
+                    [
+                        custom_app_bar.custom_appbar(page),
+                        ft.Column([
+                            ft.TextField(label="Topic Name", hint_text="Enter unique topic name", text_style=ft.TextStyle(
+                                font_family='JosefinSans Regular', size=18), content_padding=ft.padding.only(top=5, bottom=5, left=10)),
+                            ft.TextField(label="Topic Description", hint_text="Enter topic Description", text_style=ft.TextStyle(
+                                font_family='JosefinSans Regular', size=18), content_padding=ft.padding.only(top=5, bottom=5, left=10)),
+                            ft.TextField(label="Topic Tags", hint_text="#biology,#maths,#python", text_style=ft.TextStyle(
+                                font_family='JosefinSans Regular', size=18), content_padding=ft.padding.only(top=5, bottom=5, left=10)),
+                            ft.ElevatedButton(
+                                "Submit", color=ft.colors.WHITE, elevation=0, width=300, bgcolor=ft.colors.GREEN_ACCENT_200)
+                        ]),
+                        bottom_bar.bottom_nav(page)
+
+                    ],
+                )
+            )
+
         page.update()
 
     def view_pop(view):
